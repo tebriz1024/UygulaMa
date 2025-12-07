@@ -276,4 +276,855 @@
                 <span data-lang-key="navStats">İstatistik</span>
             </button>
             <button onclick="changeTab('settings', this)" aria-label="Ayarlar" data-tab-id="settings">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path fill-rule="evenodd" d="M11.085 1.77a.75.75 0 0 0-.83 0l-7.5 4.5a.75.75 0 0 0-.31 1.05 13.5 
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path fill-rule="evenodd" d="M11.085 1.77a.75.75 0 0 0-.83 0l-7.5 4.5a.75.75 0 0 0-.31 1.05 13.5 0 0 0 5.4 6.745c.895.52 1.948.52 2.843 0a13.5 13.5 0 0 0 5.4-6.745.75.75 0 0 0-.31-1.05l-7.5-4.5ZM7.5 15.75a.75.75 0 0 0 0 1.5h9a.75.75 0 0 0 0-1.5h-9ZM7.5 19.5a.75.75 0 0 0 0 1.5h9a.75.75 0 0 0 0-1.5h-9Z" clip-rule="evenodd" /></svg>
+                <span data-lang-key="navSettings">Ayarlar</span>
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        // *** 0. Dil Desteği (i18n) ***
+        const translations = {
+            tr: {
+                headerTitle: "Odak Merkezi",
+                navFocus: "Odak",
+                navNotes: "Notlar",
+                navTasks: "Görev",
+                navStats: "İstatistik",
+                navSettings: "Ayarlar",
+                pomodoroTitle: "Pomodoro Zamanlayıcı",
+                customMinPlaceholder: "Özel dk",
+                setTimeBtn: "Ayarla",
+                cycleCountLabel: "Döngü Sayısı:",
+                startBtn: "Başlat",
+                pauseBtn: "Durdur",
+                resetBtn: "Sıfırla",
+                focusModeBtn: "Odak Modu",
+                silentModeLabel: "Sessiz Mod",
+                readyFocus: (minutes) => `Hazır (${minutes} dk Odak)`,
+                focusTime: (f, b, c) => `Odak Süresi (${f}/${b} | Döngü: ${c})`,
+                breakTime: (f, b, c) => `Mola Süresi (${f}/${b} | Döngü: ${c})`,
+                todayProgressTitle: "Bugünkü İlerleme",
+                completedSessionLabel: "Tamamlanan Odak Seansı",
+                notesTitle: "Not Defteri",
+                noteSearchPlaceholder: "Notlarda ara...",
+                noteTitlePlaceholder: "Başlık",
+                noteContentPlaceholder: "Not içeriği...",
+                addNoteBtn: "Not Ekle",
+                downloadNotesBtn: "Tüm Notları İndir (.txt)",
+                tasksTitle: "Yapılacaklar Listesi",
+                newTaskPlaceholder: "Yeni görev ekle...",
+                addTaskBtn: "Ekle",
+                statsTitle: "Çalışma İstatistikleri",
+                dailySessionsLabel: "Bugün Tamamlanan Seans",
+                last7DaysTitle: "Son 7 Günlük Seans",
+                chartDesc: "(Soldan sağa: 6 gün önce - Bugün)",
+                dataManagementTitle: "Veri Yönetimi",
+                resetDataBtn: "Tüm Verileri Sıfırla (Onay Gerekir)",
+                settingsTitle: "Ayarlar",
+                languageSettingTitle: "Dil Ayarı",
+                colorSettingTitle: "Uygulama Rengi",
+                colorInfo: "Renk, vurgu ve butonları etkiler.",
+                themeSettingTitle: "Tema",
+                toggleThemeBtn: "Koyu/Açık Tema Değiştir",
+                cycleLimitTitle: "Döngü Sınırı",
+                cycleLimitDesc: "Uzun mola öncesi tamamlanacak odak seansı sayısı.",
+                focusMessage: "Odaklan! Sadece sen ve dersin var.",
+                exitFocusBtn: "Odak Modundan Çık",
+                alertValidMinutes: "Lütfen geçerli bir dakika değeri girin.",
+                confirmResetTimer: "Zamanlayıcıyı sıfırlamak istediğinizden emin misiniz?",
+                confirmDeleteNote: "Bu notu silmek istediğinizden emin misiniz?",
+                confirmDeleteTask: "Bu görevi silmek istediğinizden emin misiniz?",
+                promptEditTask: "Görevi düzenle:",
+                alertStartTimer: "Lütfen zamanlayıcıyı başlatın.",
+                confirmSessionEndFocus: (isFocus) => `${isFocus ? 'Odak' : 'Mola'} süresi bitti. Yeni seansı hemen başlatmak ister misiniz?`,
+                alertDataReset: "Tüm veriler sıfırlandı. Uygulama yeniden yüklenecek.",
+                confirmResetData: "UYARI: Tüm uygulama verilerinizi (Pomodoro, İstatistikler, Notlar, Görevler) kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
+            },
+            en: {
+                headerTitle: "Focus Center",
+                navFocus: "Focus",
+                navNotes: "Notes",
+                navTasks: "Tasks",
+                navStats: "Stats",
+                navSettings: "Settings",
+                pomodoroTitle: "Pomodoro Timer",
+                customMinPlaceholder: "Custom min",
+                setTimeBtn: "Set",
+                cycleCountLabel: "Cycle Count:",
+                startBtn: "Start",
+                pauseBtn: "Pause",
+                resetBtn: "Reset",
+                focusModeBtn: "Focus Mode",
+                silentModeLabel: "Silent Mode",
+                readyFocus: (minutes) => `Ready (${minutes} min Focus)`,
+                focusTime: (f, b, c) => `Focus Time (${f}/${b} | Cycle: ${c})`,
+                breakTime: (f, b, c) => `Break Time (${f}/${b} | Cycle: ${c})`,
+                todayProgressTitle: "Today's Progress",
+                completedSessionLabel: "Completed Focus Sessions",
+                notesTitle: "Notebook",
+                noteSearchPlaceholder: "Search notes...",
+                noteTitlePlaceholder: "Title",
+                noteContentPlaceholder: "Note content...",
+                addNoteBtn: "Add Note",
+                downloadNotesBtn: "Download All Notes (.txt)",
+                tasksTitle: "To-Do List",
+                newTaskPlaceholder: "Add new task...",
+                addTaskBtn: "Add",
+                statsTitle: "Work Statistics",
+                dailySessionsLabel: "Sessions Completed Today",
+                last7DaysTitle: "Last 7 Days Sessions",
+                chartDesc: "(Left to right: 6 days ago - Today)",
+                dataManagementTitle: "Data Management",
+                resetDataBtn: "Reset All Data (Confirmation Required)",
+                settingsTitle: "Settings",
+                languageSettingTitle: "Language Setting",
+                colorSettingTitle: "App Color",
+                colorInfo: "Color affects accent and buttons.",
+                themeSettingTitle: "Theme",
+                toggleThemeBtn: "Toggle Dark/Light Theme",
+                cycleLimitTitle: "Cycle Limit",
+                cycleLimitDesc: "Number of focus sessions before a long break.",
+                focusMessage: "Focus! It's just you and your studies.",
+                exitFocusBtn: "Exit Focus Mode",
+                alertValidMinutes: "Please enter a valid minute value.",
+                confirmResetTimer: "Are you sure you want to reset the timer?",
+                confirmDeleteNote: "Are you sure you want to delete this note?",
+                confirmDeleteTask: "Are you sure you want to delete this task?",
+                promptEditTask: "Edit task:",
+                alertStartTimer: "Please start the timer.",
+                confirmSessionEndFocus: (isFocus) => `${isFocus ? 'Focus' : 'Break'} time is over. Would you like to start the new session immediately?`,
+                alertDataReset: "All data has been reset. The application will reload.",
+                confirmResetData: "WARNING: Are you sure you want to permanently delete all application data (Pomodoro, Stats, Notes, Tasks)? This action is irreversible."
+            }
+        };
+
+        function setLanguage(lang) {
+            const t = translations[lang];
+            if (!t) return;
+            appData.language = lang;
+            if (checkLocalStorage()) saveData();
+
+            // Genel başlık
+            document.getElementById('header-title').textContent = t.headerTitle;
+
+            // Navigasyon butonları
+            document.querySelector('[data-tab-id="focus"] span').textContent = t.navFocus;
+            document.querySelector('[data-tab-id="notes"] span').textContent = t.navNotes;
+            document.querySelector('[data-tab-id="tasks"] span').textContent = t.navTasks;
+            document.querySelector('[data-tab-id="stats"] span').textContent = t.navStats;
+            document.querySelector('[data-tab-id="settings"] span').textContent = t.navSettings;
+            
+            // Focus Sekmesi
+            document.getElementById('pomodoro-title').textContent = t.pomodoroTitle;
+            document.getElementById('custom-minutes').placeholder = t.customMinPlaceholder;
+            document.getElementById('set-time-btn').textContent = t.setTimeBtn;
+            document.getElementById('start-pause-btn').textContent = isRunning ? t.pauseBtn : t.startBtn;
+            document.getElementById('stop-btn').textContent = t.resetBtn;
+            document.getElementById('focus-mode-btn').textContent = t.focusModeBtn;
+            document.getElementById('silent-mode-label').textContent = t.silentModeLabel;
+            document.getElementById('today-progress-title').textContent = t.todayProgressTitle;
+            document.getElementById('completed-session-label').textContent = t.completedSessionLabel;
+            document.getElementById('cycle-count-label').textContent = `${t.cycleCountLabel} ${appData.timer.cycleLimit}`;
+
+            // Notes Sekmesi
+            document.getElementById('notes-title').textContent = t.notesTitle;
+            document.getElementById('note-search').placeholder = t.noteSearchPlaceholder;
+            document.getElementById('note-title').placeholder = t.noteTitlePlaceholder;
+            document.getElementById('note-content').placeholder = t.noteContentPlaceholder;
+            document.getElementById('add-note-btn').textContent = t.addNoteBtn;
+            document.getElementById('download-notes-btn').textContent = t.downloadNotesBtn;
+
+            // Tasks Sekmesi
+            document.getElementById('tasks-title').textContent = t.tasksTitle;
+            document.getElementById('task-text').placeholder = t.newTaskPlaceholder;
+            document.getElementById('add-task-btn').textContent = t.addTaskBtn;
+
+            // Stats Sekmesi
+            document.getElementById('stats-title').textContent = t.statsTitle;
+            document.getElementById('daily-sessions-label').textContent = t.dailySessionsLabel;
+            document.getElementById('last-7-days-title').textContent = t.last7DaysTitle;
+            document.getElementById('chart-desc').textContent = t.chartDesc;
+            document.getElementById('data-management-title').textContent = t.dataManagementTitle;
+            document.getElementById('reset-data-btn').textContent = t.resetDataBtn;
+            
+            // Settings Sekmesi
+            document.getElementById('settings-title').textContent = t.settingsTitle;
+            document.getElementById('language-setting-title').textContent = t.languageSettingTitle;
+            document.getElementById('color-setting-title').textContent = t.colorSettingTitle;
+            document.getElementById('color-info').textContent = t.colorInfo;
+            document.getElementById('theme-setting-title').textContent = t.themeSettingTitle;
+            document.getElementById('toggle-theme-btn').textContent = t.toggleThemeBtn;
+            document.getElementById('cycle-limit-title').textContent = t.cycleLimitTitle;
+            document.getElementById('cycle-limit-desc').textContent = t.cycleLimitDesc;
+
+            // Focus Mode
+            document.getElementById('focus-message').innerHTML = t.focusMessage;
+            document.getElementById('exit-focus-btn').textContent = t.exitFocusBtn;
+
+
+            updateDisplay(); // Zamanlayıcı durumunu güncelle
+            renderNotes(); // Notları yeniden render et (Sil/İndir butonları için)
+            renderTasks(); // Görevleri yeniden render et (Sil/Düzenle butonları için)
+        }
+
+        // *** 1. Veri Yönetimi ve Başlangıç Ayarları ***
+        const STORAGE_KEY = 'ogrenci_app_v2'; // Versiyonu yükselttim
+        let appData = {};
+
+        function checkLocalStorage() {
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+        
+        const isLocalStorageAvailable = checkLocalStorage();
+
+        function loadData() {
+            if (!isLocalStorageAvailable) {
+                 appData = {
+                    timer: { initialMinutes: 25, isFocus: true, breakMinutes: 5, cycle: 1, cycleLimit: 4 },
+                    stats: { todaySessions: 0, dailySessions: Array(7).fill(0) },
+                    notes: [],
+                    tasks: [],
+                    language: 'tr',
+                    color: 'blue'
+                 };
+                 return;
+            }
+            
+            const storedData = localStorage.getItem(STORAGE_KEY);
+            if (storedData) {
+                appData = JSON.parse(storedData);
+                // Varsayılan değerleri kontrol et ve yeni alanları ekle
+                if (!appData.timer) appData.timer = { initialMinutes: 25, isFocus: true, breakMinutes: 5, cycle: 1, cycleLimit: 4 };
+                if (!appData.timer.cycleLimit) appData.timer.cycleLimit = 4;
+                if (!appData.stats) appData.stats = { todaySessions: 0, dailySessions: Array(7).fill(0) };
+                if (!appData.notes) appData.notes = [];
+                if (!appData.tasks) appData.tasks = [];
+                if (!appData.language) appData.language = 'tr';
+                if (!appData.color) appData.color = 'blue';
+
+                // Günlük veriyi sıfırlama/kaydırma kontrolü
+                const lastLogin = appData.lastLogin || new Date().toISOString().split('T')[0];
+                const today = new Date().toISOString().split('T')[0];
+
+                if (lastLogin !== today) {
+                    // Yeni gün, bugünün seansını sıfırla ve istatistikleri kaydır
+                    appData.stats.dailySessions.shift(); // En eski günü çıkar
+                    appData.stats.dailySessions.push(appData.stats.todaySessions); // Dünkü seansı ekle
+                    appData.stats.todaySessions = 0; // Bugün sıfırla
+                    appData.lastLogin = today;
+                    saveData();
+                }
+            } else {
+                // İlk açılış
+                appData = {
+                    timer: { initialMinutes: 25, isFocus: true, breakMinutes: 5, cycle: 1, cycleLimit: 4 },
+                    stats: { todaySessions: 0, dailySessions: Array(7).fill(0) },
+                    notes: [],
+                    tasks: [],
+                    lastLogin: new Date().toISOString().split('T')[0],
+                    language: 'tr',
+                    color: 'blue'
+                };
+            }
+        }
+
+        function saveData() {
+            if (isLocalStorageAvailable) {
+                 localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+            }
+        }
+
+        loadData();
+
+        // *** 2. Tema ve Renk Yönetimi ***
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+            if (isLocalStorageAvailable) localStorage.setItem('theme', newTheme);
+        }
+
+        function setPrimaryColor(color, button) {
+            document.body.setAttribute('data-color', color);
+            appData.color = color;
+            if (isLocalStorageAvailable) saveData();
+
+            document.querySelectorAll('.color-preset button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (button) button.classList.add('active');
+        }
+
+        // Tema ve Renk yükleme
+        const storedTheme = isLocalStorageAvailable ? localStorage.getItem('theme') : null;
+        if (storedTheme) {
+            document.body.setAttribute('data-theme', storedTheme);
+        } else {
+            document.body.setAttribute('data-theme', 'light');
+        }
+        
+        // Renk yükleme
+        setPrimaryColor(appData.color, null);
+
+        // *** 3. Navigasyon / Sekme Yönetimi ***
+        function changeTab(tabId, button) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+
+            if (tabId === 'stats') {
+                renderStats();
+            } else if (tabId === 'settings') {
+                // Ayarlar yüklendiğinde mevcut değerleri göster
+                document.getElementById('language-select').value = appData.language;
+                document.getElementById('cycle-limit-setting').value = appData.timer.cycleLimit;
+                document.getElementById('cycle-count-label').textContent = `${translations[appData.language].cycleCountLabel} ${appData.timer.cycleLimit}`;
+                document.querySelectorAll('.color-preset button').forEach(btn => {
+                    if (btn.getAttribute('data-color') === appData.color) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+        }
+
+        // *** 4. Pomodoro Zamanlayıcı ***
+        let timerInterval;
+        let totalSeconds;
+        let remainingSeconds;
+        let isRunning = false;
+        let lastTimestamp;
+
+        const timerDisplay = document.getElementById('timer-display');
+        const startPauseBtn = document.getElementById('start-pause-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const focusModeBtn = document.getElementById('focus-mode-btn');
+        const timerStatus = document.getElementById('timer-status');
+        const focusTimerMini = document.getElementById('focus-timer-mini');
+        const silentModeCheckbox = document.getElementById('silent-mode-checkbox');
+
+        function formatTime(totalSec) {
+            const minutes = Math.floor(totalSec / 60);
+            const seconds = totalSec % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function setPreset(focusMins, breakMins) {
+            appData.timer.initialMinutes = focusMins;
+            appData.timer.breakMinutes = breakMins;
+            appData.timer.isFocus = true;
+            appData.timer.cycle = 1;
+            resetTimer(false);
+            if (isLocalStorageAvailable) saveData();
+        }
+
+        function setCustomTime() {
+            const customMinsInput = document.getElementById('custom-minutes');
+            const customMins = parseInt(customMinsInput.value);
+            if (customMins > 0) {
+                appData.timer.initialMinutes = customMins;
+                appData.timer.breakMinutes = Math.max(5, Math.floor(customMins / 5)); // Özel arayı otomatik hesapla, min 5
+                appData.timer.isFocus = true;
+                appData.timer.cycle = 1;
+                resetTimer(false);
+                customMinsInput.value = ''; // Girişi temizle
+                if (isLocalStorageAvailable) saveData();
+            } else {
+                alert(translations[appData.language].alertValidMinutes);
+            }
+        }
+        
+        function setCycleLimit(limit) {
+            const cycleLimit = parseInt(limit);
+            if (cycleLimit >= 1 && cycleLimit <= 10) {
+                appData.timer.cycleLimit = cycleLimit;
+                document.getElementById('cycle-count-input').value = cycleLimit;
+                document.getElementById('cycle-limit-setting').value = cycleLimit;
+                document.getElementById('cycle-count-label').textContent = `${translations[appData.language].cycleCountLabel} ${cycleLimit}`;
+                if (isLocalStorageAvailable) saveData();
+            }
+        }
+
+        function updateDisplay() {
+            const t = translations[appData.language];
+            timerDisplay.textContent = formatTime(remainingSeconds);
+            focusTimerMini.textContent = formatTime(remainingSeconds);
+            document.title = `${formatTime(remainingSeconds)} - ${appData.timer.isFocus ? t.navFocus : 'Mola'} | ${t.headerTitle}`;
+     const initialMins = appData.timer.initialMinutes;
+            const breakMins = appData.timer.breakMinutes;
+            const currentCycle = appData.timer.cycle;
+
+            if (appData.timer.isFocus) {
+                timerStatus.textContent = t.focusTime(initialMins, breakMins, currentCycle);
+            } else {
+                timerStatus.textContent = t.breakTime(initialMins, breakMins, currentCycle);
+            }
+        }
+
+        function timerLoop(timestamp) {
+            if (!isRunning) return;
+
+            if (!lastTimestamp) lastTimestamp = timestamp;
+            const elapsed = timestamp - lastTimestamp;
+            
+            // 1 saniyeden fazla zaman geçtiyse kalan süreyi düşür
+            if (elapsed >= 1000) {
+                remainingSeconds -= Math.floor(elapsed / 1000);
+                lastTimestamp += Math.floor(elapsed / 1000) * 1000;
+            }
+
+            if (remainingSeconds <= 0) {
+                endSession();
+                return;
+            }
+
+            updateDisplay();
+            requestAnimationFrame(timerLoop);
+        }
+
+        function toggleTimer() {
+            const t = translations[appData.language];
+            if (isRunning) {
+                // Durdur
+                isRunning = false;
+                cancelAnimationFrame(timerInterval);
+                startPauseBtn.textContent = t.startBtn;
+                stopBtn.disabled = false;
+                focusModeBtn.disabled = false;
+                lastTimestamp = null; // Zamanlayıcının kaymasını engelle
+            } else {
+                // Başlat
+                if (remainingSeconds === undefined || remainingSeconds <= 0) {
+                    remainingSeconds = appData.timer.initialMinutes * 60;
+                }
+                isRunning = true;
+                startPauseBtn.textContent = t.pauseBtn;
+                stopBtn.disabled = false;
+                focusModeBtn.disabled = false;
+                // requestAnimationFrame ile zamanlayıcıyı başlat
+                timerInterval = requestAnimationFrame(timerLoop);
+                if (isLocalStorageAvailable) saveData();
+            }
+        }
+
+        function resetTimer(confirm = true) {
+            const t = translations[appData.language];
+            if (confirm && isRunning && !window.confirm(t.confirmResetTimer)) {
+                return;
+            }
+
+            isRunning = false;
+            cancelAnimationFrame(timerInterval);
+            lastTimestamp = null;
+            
+            // Başlangıç süresini ayarla (Odak süresi)
+            const initialTime = appData.timer.initialMinutes * 60;
+            remainingSeconds = initialTime;
+            
+            startPauseBtn.textContent = t.startBtn;
+            stopBtn.disabled = true;
+            focusModeBtn.disabled = true;
+
+            // Odak modu açıksa kapat
+            if (document.getElementById('focus-mode').classList.contains('active')) {
+                toggleFocusMode();
+            }
+
+            // Durumu güncelleyip kaydet
+            appData.timer.isFocus = true;
+            appData.timer.cycle = 1;
+            
+            // Hazır durum mesajını güncelleyin
+            timerStatus.textContent = t.readyFocus(appData.timer.initialMinutes);
+            timerDisplay.textContent = formatTime(initialTime);
+            focusTimerMini.textContent = formatTime(initialTime);
+            document.title = `${formatTime(initialTime)} - ${t.navFocus} | ${t.headerTitle}`;
+
+            if (isLocalStorageAvailable) saveData();
+        }
+
+        function endSession() {
+            isRunning = false;
+            cancelAnimationFrame(timerInterval);
+            lastTimestamp = null;
+            playSound(!silentModeCheckbox.checked);
+
+            if (appData.timer.isFocus) {
+                // Odak bitti
+                appData.stats.todaySessions += 1; // İlerlemeyi artır
+                appData.timer.isFocus = false;
+                
+                // Mola süresini ayarla
+                let breakTime;
+                if (appData.timer.cycle < appData.timer.cycleLimit) {
+                    breakTime = appData.timer.breakMinutes * 60; // Kısa Mola
+                    appData.timer.cycle++;
+                } else {
+                    breakTime = 20 * 60; // Uzun Mola (Döngü Sınırı sonrası)
+                    appData.timer.cycle = 1; // Döngüyü sıfırla
+                    triggerConfetti();
+                }
+                remainingSeconds = breakTime;
+
+                renderStats(); // İstatistikleri güncelle
+            } else {
+                // Mola bitti, Odak'a dön
+                appData.timer.isFocus = true;
+                remainingSeconds = appData.timer.initialMinutes * 60;
+            }
+            
+            updateDisplay();
+            if (isLocalStorageAvailable) saveData();
+
+            const t = translations[appData.language];
+            // Yeni seansı otomatik başlat
+            if (window.confirm(t.confirmSessionEndFocus(appData.timer.isFocus))) {
+                toggleTimer();
+            } else {
+                 startPauseBtn.textContent = t.startBtn;
+                 stopBtn.disabled = true;
+                 focusModeBtn.disabled = true;
+                 // Manuel başlatmayı beklerken display'i güncelle
+                 updateDisplay(); 
+            }
+            
+             // Odak modu açıksa güncelle
+            if (document.getElementById('focus-mode').classList.contains('active')) {
+                toggleFocusMode(); // Kapat
+                if (isRunning) toggleFocusMode(); // Yeniden başlatıldıysa tekrar aç
+            }
+
+        }
+
+        // Başlangıç yüklemesi
+        setLanguage(appData.language);
+        document.getElementById('language-select').value = appData.language;
+        document.getElementById('cycle-count-input').value = appData.timer.cycleLimit;
+        document.getElementById('cycle-limit-setting').value = appData.timer.cycleLimit;
+        
+        // Timer'ı başlatma (resetTimer içinde dil ayarı yapıldığı için en sona)
+        setTimeout(() => resetTimer(false), 0); 
+
+
+        // *** 5. Odak Modu ***
+        function toggleFocusMode() {
+            const focusMode = document.getElementById('focus-mode');
+            const t = translations[appData.language];
+            if (focusMode.classList.contains('active')) {
+                focusMode.classList.remove('active');
+                document.body.style.overflow = '';
+            } else {
+                if (!isRunning) {
+                    alert(t.alertStartTimer);
+                    return;
+                }
+                focusMode.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // *** 6. İstatistikler (Grafik ve Sayılar) ***
+        function renderStats() {
+            if (!isLocalStorageAvailable) return;
+            document.getElementById('session-count').textContent = appData.stats.todaySessions;
+            document.getElementById('daily-sessions-stat').textContent = appData.stats.todaySessions;
+
+            const chartContainer = document.getElementById('weekly-chart');
+            chartContainer.innerHTML = '';
+            const data = appData.stats.dailySessions; // Son 7 gün (0. index = 6 gün önce, 6. index = Dün)
+            const todaySessions = appData.stats.todaySessions;
+            const fullData = [...data.slice(1), todaySessions]; // 6 gün önceki veriden başla, sonuncusu bugünün verisi
+
+            const maxSessions = Math.max(...fullData, 1); // En az 1
+
+            fullData.forEach((sessions, index) => {
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                const heightPercentage = (sessions / maxSessions) * 100;
+                bar.style.height = `${Math.max(5, heightPercentage)}%`; // Minimum yükseklik 5%
+
+                const sessionsSpan = document.createElement('span');
+                sessionsSpan.textContent = sessions;
+                bar.appendChild(sessionsSpan);
+                chartContainer.appendChild(bar);
+            });
+        }
+
+        // *** 7. Notlar ***
+        function renderNotes(filter = '') {
+            if (!isLocalStorageAvailable) return;
+            const list = document.getElementById('notes-list');
+            list.innerHTML = '';
+            const t = translations[appData.language];
+
+            const filteredNotes = appData.notes.filter(note => 
+                note.title.toLowerCase().includes(filter.toLowerCase()) || 
+                note.content.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            filteredNotes.reverse().forEach(note => { // Yenileri üstte göster
+                const noteDiv = document.createElement('div');
+                noteDiv.className = 'note-item';
+                noteDiv.dataset.id = note.id;
+                noteDiv.innerHTML = `
+                    <h4>${note.title}</h4>
+                    <p>${note.content}</p>
+                    <div class="note-actions">
+                        <button onclick="deleteNote(${note.id})" aria-label="${t.confirmDeleteNote.slice(0, 10)}">Sil</button>
+                        <button onclick="exportSingleNote(${note.id})" style="color: var(--accent-light);" aria-label="Notu İndir">İndir</button>
+                    </div>
+                `;
+                list.appendChild(noteDiv);
+            });
+        }
+
+        function addNote(event) {
+            event.preventDefault();
+            if (!isLocalStorageAvailable) return;
+            const titleInput = document.getElementById('note-title');
+            const contentInput = document.getElementById('note-content');
+
+            const newNote = {
+                id: Date.now(),
+                title: titleInput.value.trim(),
+                content: contentInput.value.trim()
+            };
+
+            appData.notes.push(newNote);
+            saveData();
+            renderNotes();
+            titleInput.value = '';
+            contentInput.value = '';
+        }
+
+        function deleteNote(id) {
+            const t = translations[appData.language];
+            if (!isLocalStorageAvailable || !confirm(t.confirmDeleteNote)) return;
+            appData.notes = appData.notes.filter(note => note.id !== id);
+            saveData();
+            renderNotes();
+        }
+        
+        document.getElementById('note-search').addEventListener('input', (e) => {
+            renderNotes(e.target.value);
+        });
+        
+        function exportNotes() {
+            if (!isLocalStorageAvailable) return;
+            const text = appData.notes.map(n => `--- ${n.title} ---\n${n.content}\n`).join('\n\n');
+            downloadFile('all_notes.txt', text);
+        }
+        
+        function exportSingleNote(id) {
+            if (!isLocalStorageAvailable) return;
+            const note = appData.notes.find(n => n.id === id);
+            if(note) {
+                 const text = `--- ${note.title} ---\n${note.content}\n`;
+                 downloadFile(`${note.title.replace(/[^a-z0-9]/gi, '_')}.txt`, text);
+            }
+        }
+        
+        function downloadFile(filename, text) {
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        // *** 8. Görevler ***
+        function renderTasks() {
+            if (!isLocalStorageAvailable) return;
+            const list = document.getElementById('tasks-list');
+            list.innerHTML = '';
+            const t = translations[appData.language];
+
+            appData.tasks.forEach(task => {
+                const taskDiv = document.createElement('div');
+                taskDiv.className = `task-item ${task.completed ? 'completed' : ''}`;
+                taskDiv.dataset.id = task.id;
+                taskDiv.innerHTML = `
+                    <label>
+                        <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTaskCompleted(${task.id})">
+                        <span class="flex-grow">${task.text}</span>
+                    </label>
+                    <div class="task-actions">
+                        <button onclick="editTask(${task.id})" aria-label="Görevi Düzenle">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M5.433 13.917V15a.75.75 0 0 0 .75.75h1.083l6.588-6.588a1.5 1.5 0 0 0-2.121-2.121l-6.588 6.588Z" /><path d="M15.113 4.887a2.25 2.25 0 0 0-3.182-3.182l-3.23 3.23a.75.75 0 0 0-.175.247L6.474 8.271a.75.75 0 0 0 .991.991l2.499-.582a.75.75 0 0 0 .247-.175l3.23-3.23ZM12 9a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5A.75.75 0 0 1 12 9Z" /></svg>
+                        </button>
+                        <button onclick="deleteTask(${task.id})" aria-label="Görevi Sil">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M8.75 1A.75.75 0 0 0 8 1.75V2h4v-.25A.75.75 0 0 0 11.25 1h-2.5ZM13.5 3.25a.75.75 0 0 0-.75-.75h-5.5a.75.75 0 0 0-.75.75v1.75h7V3.25Z" clip-rule="evenodd" /><path fill-rule="evenodd" d="M19.5 5.5a.75.75 0 0 0-.75-.75h-15a.75.75 0 0 0 0 1.5h15A.75.75 0 0 0 19.5 5.5Zm-1.75 2.25H2.25V18a2.25 2.25 0 0 0 2.25 2.25h11a2.25 2.25 0 0 0 2.25-2.25V7.75Zm-7.25 2.5a.75.75 0 0 0-1.5 0v5a.75.75 0 0 0 1.5 0v-5ZM10 10.5a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75ZM15.75 10.5a.75.75 0 0 0-1.5 0v5a.75.75 0 0 0 1.5 0v-5Z" clip-rule="evenodd" /></svg>
+                        </button>
+                    </div>
+                `;
+                list.appendChild(taskDiv);
+            });
+        }
+
+        function addTask(event) {
+            event.preventDefault();
+            if (!isLocalStorageAvailable) return;
+            const taskInput = document.getElementById('task-text');
+            const taskText = taskInput.value.trim();
+
+            if (taskText) {
+                const newTask = {
+                    id: Date.now(),
+                    text: taskText,
+                    completed: false
+                };
+                appData.tasks.push(newTask);
+                saveData();
+                renderTasks();
+                taskInput.value = '';
+            }
+        }
+
+        function toggleTaskCompleted(id) {
+            if (!isLocalStorageAvailable) return;
+            const task = appData.tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                saveData();
+                renderTasks();
+            }
+        }
+
+        function editTask(id) {
+            if (!isLocalStorageAvailable) return;
+            const t = translations[appData.language];
+            const task = appData.tasks.find(t => t.id === id);
+            if (task) {
+                const newText = prompt(t.promptEditTask, task.text);
+                if (newText !== null && newText.trim() !== '') {
+                    task.text = newText.trim();
+                    saveData();
+                    renderTasks();
+                }
+            }
+        }
+
+        function deleteTask(id) {
+            const t = translations[appData.language];
+            if (!isLocalStorageAvailable || !confirm(t.confirmDeleteTask)) return;
+            appData.tasks = appData.tasks.filter(t => t.id !== id);
+            saveData();
+            renderTasks();
+        }
+
+        // *** 9. Ekstralar ***
+
+        // Ses Efekti (Mevcut)
+        function playSound(enabled) {
+            if (!enabled) return;
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                                const audioCtx = new AudioContext();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(440, audioCtx.currentTime); // 440 Hz (A4)
+                gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5); // 0.5 saniyede sönme
+                oscillator.stop(audioCtx.currentTime + 0.5);
+            } catch (e) {
+                console.error("Ses çalınamadı:", e);
+            }
+        }
+
+        // Konfeti (Mevcut)
+        function triggerConfetti() {
+            const container = document.getElementById('confetti-container');
+            container.innerHTML = '';
+            const colors = [
+                document.body.getAttribute('data-color') === 'red' ? '#dc2626' : '#4f46e5', // Kırmızı veya Mavi
+                document.body.getAttribute('data-color') === 'red' ? '#fca5a5' : '#a78bfa',
+                document.body.getAttribute('data-color') === 'green' ? '#10b981' : '#10b981', // Yeşil
+                document.body.getAttribute('data-color') === 'green' ? '#34d399' : '#34d399',
+                '#facc15' // Sarı
+            ];
+
+            for (let i = 0; i < 50; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.left = `${Math.random() * 100}vw`;
+                piece.style.animationDelay = `${Math.random() * 2}s`;
+                piece.style.animationDuration = `${Math.random() * 2 + 3}s`;
+                container.appendChild(piece);
+            }
+
+            // Animasyon bitince temizle
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // Klavye Kısayolları (Mevcut)
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('tab-focus').classList.contains('active')) {
+                if (e.key === ' ') {
+                    e.preventDefault();
+                    toggleTimer();
+                } else if (e.key === 'r') {
+                    e.preventDefault();
+                    resetTimer();
+                }
+            } else if (e.key === 'n' && document.getElementById('tab-notes').classList.contains('active')) {
+                 e.preventDefault();
+                 document.getElementById('note-title').focus();
+            }
+        });
+
+        // Tüm Verileri Sıfırla (Mevcut)
+        function resetAllDataConfirmation() {
+            const t = translations[appData.language];
+            if (window.confirm(t.confirmResetData)) {
+                if (isLocalStorageAvailable) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    localStorage.removeItem('theme'); // Temayı da sıfırla
+                }
+                alert(t.alertDataReset);
+                window.location.reload();
+            }
+        }
+
+        // *** Başlangıç Yüklemeleri ***
+        document.addEventListener('DOMContentLoaded', () => {
+            // Renk düğmelerini başlangıçta aktif yap
+            document.querySelectorAll('.color-preset button').forEach(btn => {
+                if (btn.getAttribute('data-color') === appData.color) {
+                    btn.classList.add('active');
+                }
+            });
+
+            renderTasks();
+            renderNotes();
+            renderStats(); // Başlangıçta da istatistikleri yükle
+        });
+    </script>
+</body>
+</html>
